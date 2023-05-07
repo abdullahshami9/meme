@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login and Register Form</title>
+<link rel="icon" href="images/logo3.jpeg">
+<link rel="stylesheet" type="text/css" href="css/login.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</head>
+
+
+
+<body>
+
+
+
+	<div class="voldmart">
+	<div class="form-box">
+	<div class="button-box">
+	<div id="btn"></div>
+	<button type="button" class="toggle-btn1" onclick="login()">Log In</button>
+	<button type="button" class="toggle-btn1" onclick="register()">Register</button>
+	</div>
+	<div class="social-icons">
+	<a href="#"><img src="images/fb.png"></a>
+	<a href="#"><img src="images/tw.png"></a>
+	<a href="#"><img src="images/gp.png"></a>
+	</div>
+
+	<form id="login" class="input-grp" method="POST" action="loginmanager.php">
+	<input type="text" class="input-field" placeholder="Email" style="color:orange;" required name="new_email">
+	<input type="password" class="input-field" placeholder="Password" style="color:orange;" required name="new_pass">
+	<input type="checkbox" class="check-box"><span style="padding-bottom:-5px;">Remember Password</span>
+	<input class="sumbit-btn" type="submit" name="login">
+	</form>
+
+
+	<form id="register" class="input-grp" method="POST" action="loginmanager.php">
+		<input type="email" name="email" class="input-field" placeholder="Email Address" required>
+		<input type="text" name="fullname" class="input-field" placeholder="full name" required>
+		<input type="text" name="username" class="input-field" placeholder="user name" required>
+		<input type="password" name="pass" class="input-field" placeholder="Password" required>
+		<input type="checkbox" name="check" class="check-box" required name="check-box-terms" value="1"><span style="padding-bottom:-5px;">I agree to the <a href="terms_conditions.php" id="terms_conditions" name="terms_conditions" target="_blank">Terms & Conditions</a></span>
+		<button class="sumbit-btn" name="submit" type="submit">Register</button>
+	</form>
+	</div>
+	</div>
+
+
+
+		<script>
+	var x = document.getElementById('login');
+	var y = document.getElementById('register');
+	var z = document.getElementById('btn');
+
+	function register(){
+		x.style.left ="-400px";
+		y.style.left ="50px";
+		z.style.left ="110px";
+	}
+	function login(){
+		x.style.left ="50px";
+		y.style.left ="450px";
+		z.style.left ="0px";
+	}
+
+	</script>
+	</body>
+</html>
