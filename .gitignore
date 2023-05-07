@@ -1,2 +1,3 @@
-config/
-postimg/
+config
+postimg
+*.exe
