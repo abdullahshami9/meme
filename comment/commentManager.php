@@ -31,7 +31,8 @@ class commentManager{
 		}
 }//class ends
 require_once "../config/config.php";
-$commMrg = new commentManager(new Database());
+$Database = Database::getInstance();
+$commMrg = new commentManager($Database);
 $commMrg->create_comment();
 if (isset($_GET['comment'])) {
 	unset($_GET['comment']);

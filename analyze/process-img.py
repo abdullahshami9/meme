@@ -22,3 +22,11 @@ cur.commit();
 print(cur);
 cur.close()
 con.close()
+
+# import pytesseract
+# from PIL import Image
+
+# image = Image.open('image.jpg')
+# text = pytesseract.image_to_string(image)
+# text_array = text.split('\n')
+# print(text_array)

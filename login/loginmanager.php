@@ -1,13 +1,40 @@
 <?php 
 session_start();
 
+
+// Define the AuthenticationStateInterface
+interface AuthenticationStateInterface {
+    public function authenticate(LoginManager $loginManager);
+}
+
+// Implement the LoggedInState class
+class LoggedInState implements AuthenticationStateInterface {
+    public function authenticate(LoginManager $loginManager) {
+        if ($loginManager->isAdmin()) {
+            header("location: ../admin/");
+        } else {
+            header("location: ../home/");
+        }
+    }
+}
+
+// Implement the LoggedOutState class
+class LoggedOutState implements AuthenticationStateInterface {
+    public function authenticate(LoginManager $loginManager) {
+		header("location: ../login");
+        echo "<script>alert('Username or password is incorrect');</script>";
+    }
+}
+
 class LoginManager{
 
 
     private $db;
+	private $state;
     function __construct($db)
     {
         $this->db=$db;
+		$this->state = new LoggedOutState();
     }
 
     public function authenticate()
@@ -25,23 +52,19 @@ class LoginManager{
                 $_SESSION['admin']=$row['admin'];
                 $_SESSION['profile_id'] = $row['profile_id'];
                 $_SESSION['name'] = $row['username'];
-                if ($_SESSION['admin']==0) {
-               		 header("location: ../home/");                	
+                if ($this->isAdmin()) {
+                    $this->setState(new LoggedInState());
+                } else {
+                    $this->setState(new LoggedInState());
                 }
-                elseif ($_SESSION['admin']==1) {
-                	header("location: ../admin/");
-            			}
-       		 }
-       		 else {
-       		 	echo "<script>
-					alert('user name or password is incorrect');
-       		 	</script>";
-       		 	header("location: ../login");
-       		 }
        		}
-        	if (isset($_POST['submit'])) {
+       		 else {
+                $this->setState(new LoggedOutState());
+            }
+       	}
+			if (isset($_POST['submit'])) {
 
-			$register_qry = "insert into register(id,email,pass,agree) values(null,  '".$_POST['email']."','".$_POST['pass']."', '".$_POST['check']."');";
+				$register_qry = "insert into register(id,email,pass,agree) values(null,  '".$_POST['email']."','".$_POST['pass']."', '".$_POST['check']."');";
 				//insert_id will return the student id (primary key) of the last inserted data.
 					if ($this->db->con->query($register_qry)) {
 						$profile_qry="insert into profile(id,reg_id_fk,bio,dob,prof_make_time,gender,statuss,fullname,username) values(null,'".$this->db->con->insert_id."',null,null,null,null,null,'".$_POST['fullname']."','".$_POST['username']."');";
@@ -57,17 +80,29 @@ class LoginManager{
 								$_SESSION['fullname']=$row['fullname'];
 								$_SESSION['profile_id']=$row['profile_id'];
 								header("location: ../home/");
-		}
+							}
 						}
 					}
 					else{
 						echo 'error caused';
 					}
-				}
 			}
+			// Call the authenticate() method on the current state
+			$this->state->authenticate($this);
+		}
+
+		public function isAdmin() {
+			// Check if the user is an admin
+			return $_SESSION['admin'] == 1;
+		}
+	
+		public function setState(AuthenticationStateInterface $state) {
+			$this->state = $state;
+		}
     }
 
 require_once "../config/config.php";
-$logMgr = new LoginManager(new Database());
+$Database = Database::getInstance();
+$logMgr = new LoginManager($Database);
 $logMgr->authenticate();
 ?>
