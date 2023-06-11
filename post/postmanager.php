@@ -6,7 +6,7 @@ if(!isset($_SESSION))
 
    interface PostManagerInterface {
       public function create_post();
-      public function fetch_post();
+      public function fetch_post($interest = null,$emotions = null);
   }
 	class postmanager implements PostManagerInterface{
       private $meme_id;
@@ -31,12 +31,22 @@ if(!isset($_SESSION))
 
 		}//create post subroutine ends
 
-		public function fetch_post(){
+		public function fetch_post($interest = null, $emotion = null){
 
-			$qry="select p.id, p.description, p.times, p.dates, pro.username, pro.id as profile_id from post p, profile pro where pro.id = p.prof_id_fk order by p.id desc;";
+			// $qry="select p.id, p.description, p.times, p.dates, pro.username, pro.id as profile_id from post p, profile pro where pro.id = p.prof_id_fk order by p.id desc;";
 
 
-         $result = $this->db->con->query($qry);
+         $query = "SELECT DISTINCT p.id, p.description, p.times, p.dates, pro.username, pro.id AS profile_id FROM post p INNER JOIN profile pro ON pro.id = p.prof_id_fk ";
+         if ($interest !== null || $emotion !== null) {
+            $interest = ($interest !== null) ? $interest : '(0)';
+            $emotion = ($emotion !== null) ? $emotion : '(0)';
+
+            $query .= " WHERE (p.emotions_id in $emotion OR p.interest_id in $interest) ";
+         }
+         $query .= " ORDER BY p.id DESC";
+         // print_r($query);die;
+
+         $result = $this->db->con->query($query);
          //code comment
          include"../comment/commentManager.php";
          // include"../comment/showcomment.php";

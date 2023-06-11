@@ -41,7 +41,7 @@ class LoginManager{
     {
         if (isset($_POST['login'])) {
 
-            $signin_qry = "select r.email,r.agree,r.id,r.admin,p.id as profile_id,p.username,p.fullname from register r,profile p where email = '" . $_POST['new_email'] . "' and pass = '" . $_POST['new_pass'] . "'  and r.id=p.reg_id_fk; ";
+            $signin_qry = "select r.email,r.agree,r.id,r.admin,p.id as profile_id,p.username,p.fullname,p.emotions_id,p.interest_id from register r,profile p where email = '" . $_POST['new_email'] . "' and pass = '" . $_POST['new_pass'] . "'  and r.id=p.reg_id_fk; ";
             $result = $this->db->con->query($signin_qry);
             if ($row = $result->fetch_assoc())
              {
@@ -52,6 +52,8 @@ class LoginManager{
                 $_SESSION['admin']=$row['admin'];
                 $_SESSION['profile_id'] = $row['profile_id'];
                 $_SESSION['name'] = $row['username'];
+                $_SESSION['emotions_id'] = $row['emotions_id'];
+                $_SESSION['interest_id'] = $row['interest_id'];
                 if ($this->isAdmin()) {
                     $this->setState(new LoggedInState());
                 } else {

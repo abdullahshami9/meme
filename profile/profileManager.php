@@ -5,7 +5,7 @@
 	 */
 	class ProfileManagerProxy extends profileManager {
 		private $realProfileManager;
-		private $loaded;
+		private $loaded;//boolean
 	
 		public function __construct($db) {
 			parent::__construct($db);
@@ -44,7 +44,7 @@
 	    private $status;
 	    private $fullname;
 	    private $bio;
-		private $db;
+		 private $db;
 
 	    public function __construct($db)
 	    {
@@ -241,9 +241,59 @@
 
 	    }//delete_profile_post_from_post ends
 
+   //     function generateDropdownOptions($dropdownId, $valueArray, $idField, $valueField, $isRequired = true, $multiple = false, $default = true, $selected = null) {
+   //       $required = ($isRequired) ? "required" : "";
+     
+   //       $select = "<select id='$dropdownId' name='$dropdownId";
+   //       $select .= ($multiple) ? "[]" : "";
+   //       $select .= "' class='form-control $required'";
+   //       $select .= ($multiple) ? " multiple" : "";
+   //       $select .= ">";
+     
+   //       if (!$multiple && $default) {
+   //           $select .= "<option value=''>- Select -</option>";
+   //       }
+     
+   //       foreach ($valueArray as $value) {
+   //           $optionValue = $value->$idField;
+   //           $optionText = ucfirst($value->$valueField);
+   //           $isSelected = (!empty($selected) && $optionValue == $selected) ? "selected" : "";
+     
+   //           $select .= "<option value='$optionValue' $isSelected>$optionText</option>";
+   //       }
+     
+   //       $select .= "</select>";
+     
+   //       return $select;
+   //   }
+
+   //   function dropdown_emotion(){
+   //    $sql = "select * from emotions";
+   //    $result = $this->db->con->query($sql);
+   //    $rows;
+   //    $option;
+   //    while ($row = $result->fetch_assoc()) {
+   //       # code...
+   //       $id = $row['id'];
+   //       $name = $row['name'];
+   //       $option .= "<option id='$id'>$name</option>";
+   //    }
+   //    return $option;
+   //    // print_r($option);die;
+   //   }
+
+   //   function dropdown_interest(){
+   //    $interestsDropdown = generateDropdownOptions("interests", $interests, "id", "interest_name");
+   //    return $interestsDropdown;
+   //   }
+     
+
 	}//class profileManager ends
 
-	require_once"../config/config.php";
+
+   
+   require_once"../config/config.php";
+   // error_reporting(0);
 	$Database = Database::getInstance();
 	$fake_profile_Manager = new ProfileManagerProxy($Database);
 	$fake_profile_Manager->fetch_post_2();

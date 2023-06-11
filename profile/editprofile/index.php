@@ -13,7 +13,8 @@
       public $slt_prof;
 
       public function __construct(){
-         $this->slt_prof=new selectfromProfile(new Database());
+         $Database = Database::getInstance();
+         $this->slt_prof=new selectfromProfile($Database);
          $this->slt_prof->qry();
    }
    public function assign(){
@@ -120,7 +121,8 @@
                               </tr>
                            </thead>
                            <tbody>
-                           
+                           <input type="hidden" name="status">
+                           <input type="hidden" name="gender">
                               
                               <tr>
                                  <td class="field disable">Lawn Name: </td>
@@ -163,6 +165,30 @@
                                     <option value="kpk">Khyber Pakhtoon Khaw</option>
                                     <option value="punjab">Punjab</option>
                                     <option value="baltistan">Gilgit Baltistan</option>
+                                 </select></td>
+                              </tr>
+                              <tr>
+                              <tr>
+                                 <td class="field">Interest</td>
+                                 <td><select name="interest" id="">
+                                    <option value="" >-select-</option>
+                                    <option value="1" >cricket</option>
+                                    <option value="2">stydy</option>
+                                    <option value="3">programming</option>
+                                    <option value="4">logical</option>
+                                    <option value="5">social</option>
+                                 </select></td>
+                              </tr>
+                              <tr>
+                              <tr>
+                                 <td class="field">Emotions</td>
+                                 <td><select name="emotion" id="">
+                                    <option value="1">-select<option>
+                                    <option value="2">joy<option>
+                                    <option value="3">anger<option>
+                                    <option value="4">sadness<option>
+                                    <option value="5">surprise<option>
+                                    
                                  </select></td>
                               </tr>
                               <tr>
@@ -243,7 +269,7 @@
       switch(error.code){
       case error.PERMISSION_DENIED:
          alert("you must allow the geolocation to fill this form");
-         location.reload();
+         // location.reload();
          break;
       }
    }

@@ -56,8 +56,17 @@
 
 
 <?php 
-   include("../post/postmanager.php");
-   $ptMgr->fetch_post();
+   require_once("../post/postmanager.php");
+  //  print_r($_SESSION['interest_id']);die;
+  // $ptMgr->setSortingStrategy(new LatestPostSortingStrategy());
+   if ((isset($_SESSION['interest_id']) && !empty($_SESSION['interest_id'])) || (isset($_SESSION['emotions_id']) && !empty($_SESSION['emotions_id']))) {
+    # code...
+    // Recommendation collaborative filtering, content-based filtering, or hybrid approaches
+    $ptMgr->fetch_post($_SESSION['interest_id'],$_SESSION['emotions_id']);
+   }
+   else {
+    $ptMgr->fetch_post();
+   }
    // include("../comment/commentManager.php");
  ?>
 

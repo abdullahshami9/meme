@@ -20,9 +20,11 @@
 	<!-- <title>profile</title> -->
   <link rel="icon" href="images/logo3.jpeg">
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
   <!-- <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet"> -->
-  <link rel="stylesheet" href="css/profile.css">
-	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <!-- <link rel="stylesheet" href="css/profile.css"> -->
+	<!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
@@ -69,6 +71,15 @@
 			height: 45px;
 		}
 	}
+  #search-box{
+    margin-left: 30vw;
+    border-radius: 15px; 
+    border: none;
+    width: 20vw; 
+    border-right: 1px magenta solid;
+    border-left: 1px magenta solid; */
+     height: 30px;
+  }
 </style>
 <body>
 	
@@ -78,7 +89,14 @@
     <span class="navbar-toggler-icon"></span>
   </button>
 
+  
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <!-- <center>
+      <div> -->
+        <input type="search" id="search-box" class="search center" placeholder="Search...">
+        <div id="suggestions" style="z-index:1;border-radius:15px;border:solid magenta 1px;"></div>
+      <!-- </div>
+    </center> -->
     <ul class="navbar-nav ml-auto">
       <li class="nav-item active">
         <a class="nav-link" href="../home/">Home <span class="sr-only">(current)</span></a>
@@ -92,7 +110,7 @@
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="word-spacing:-20px;">
           <a class="dropdown-item" href="../trending/">Trending</a>
-          <a class="dropdown-item" href="#">Another action</a>
+          <a class="dropdown-item" href="../trending/show_visited_profile.php">Another action</a>
           <div class="dropdown-divider"></div>
           <a class="dropdown-item" href="../logout/logout.php">logout</a>
         </div>
@@ -107,3 +125,38 @@
 
 </body>
 </html>
+
+<script>
+
+$('#search-box').on('change keyup', function() {
+  var value = $(this).val();
+  $.ajax({
+    url: '../header/search_ajax.php',
+    type: 'POST',
+    data: { value },
+    success: function(response) {
+      // Parse the JSON response into an array of objects
+      console.log(response);
+      var results = JSON.parse(response);
+
+      // Clear previous suggestions
+      $('#suggestions').empty();
+
+      // Iterate over the results and append suggestions to the suggestions div
+      for (var i = 0; i < results.length; i++) {
+        var id = results[i].id;
+        var suggestion = results[i].fullname;
+        $('#suggestions').append('<div style="background-color: white; z-index: +1;" class="suggestion"><a href="../profile/index.php?id=' + id + '">' + suggestion + '</a></div>');
+
+      }
+    },
+    error: function(xhr, status, error) {
+      // Handle any errors that occur during the Ajax request
+      console.log('Error:', error);
+    }
+  });
+});
+
+
+
+</script>

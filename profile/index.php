@@ -44,6 +44,7 @@
                   </div>
                   <!-- END profile-header-content -->
                   <!-- BEGIN profile-header-tab -->
+                  <input type="search" class="searchbox">
                   <ul class="profile-header-tab nav nav-tabs">
                      <li class="nav-item"><a href="https://www.bootdey.com/snippets/view/bs4-profile-with-timeline-posts" target="__blank" class="nav-link_">POSTS</a></li>
                      <li class="nav-item"><a href="https://www.bootdey.com/snippets/view/bs4-profile-about" target="__blank" class="nav-link_">ABOUT</a></li>
@@ -69,3 +70,27 @@
 	
 </body>
 </html>
+
+<script>
+
+   // Parse the current URL
+const urlParams = new URLSearchParams(window.location.search);
+const id = urlParams.get('id');
+
+// Check if the 'id' parameter is present in the URL
+if (id) {
+  // Run your AJAX function here
+  // For example, using the fetch API:
+  fetch('../header/searched_profile.php?id=' + id)
+    .then(response => response.json())
+    .then(data => {
+      // Handle the response data
+      console.log(data);
+    })
+    .catch(error => {
+      // Handle any errors
+      console.error(error);
+    });
+}
+
+</script>
