@@ -5,7 +5,7 @@ if(!isset($_SESSION))
     } 
 
    interface PostManagerInterface {
-      public function create_post();
+      public function create_post(ImageAdapterInterface $data);
       public function fetch_post($interest = null,$emotions = null);
   }
 	class postmanager implements PostManagerInterface{
@@ -14,22 +14,57 @@ if(!isset($_SESSION))
 		function __construct($db){
 			$this->db=$db;
 		}
-		public function create_post(){
-			 if (isset($_POST['post'])) {
-            $id=$_SESSION['profile_id'];
-            $qry= "INSERT INTO `post` (`id`, `prof_id_fk`, `description`, `times`, `dates`, `file_size`, `allow`) VALUES (NULL, '".$id."', '".$_POST['post_description']."', current_time, current_date, null, NULL);";
+		// public function create_post(){
+		// 	 if (isset($_POST['post'])) {
+      //       $id=$_SESSION['profile_id'];
+      //       $qry= "INSERT INTO `post` (`id`, `prof_id_fk`, `description`, `times`, `dates`, `file_size`, `allow`) VALUES (NULL, '".$id."', '".$_POST['post_description']."', current_time, current_date, null, NULL);";
       
-            if ($this->db->con->query($qry)) {
-            $memeId = $this->db->con->insert_id;
-            move_uploaded_file($_FILES['memejpg']['tmp_name'], "../postimg/".$memeId.".jpg");
-            // echo 'posted';
-            }
-            else {
-            echo "<script>alert('post is not done try again');</script>";
-            }
-         }//if isset post butto ends
+      //       if ($this->db->con->query($qry)) {
+      //       $memeId = $this->db->con->insert_id;
+      //       move_uploaded_file($_FILES['memejpg']['tmp_name'], "../postimg/".$memeId.".jpg");
+      //       // echo 'posted';
+      //       }
+      //       else {
+      //       echo "<script>alert('post is not done try again');</script>";
+      //       }
+      //    }//if isset post butto ends
 
-		}//create post subroutine ends
+		// }//create post subroutine ends
+
+
+
+
+//implement crete_post same function which comment above with adapter pattern so it can change image into jpeg
+
+public function create_post(ImageAdapterInterface $imageAdapter){
+   if (isset($_POST['post']) && isset($_FILES['memejpg'])) {
+       $id = $_SESSION['profile_id'];
+       $postDescription = $_POST['post_description'];
+       
+       $qry = "INSERT INTO `post` (`id`, `prof_id_fk`, `description`, `times`, `dates`, `file_size`, `allow`) VALUES (NULL, '".$id."', '".$postDescription."', current_time, current_date, null, NULL);";
+     
+       if ($this->db->con->query($qry)) {
+           $memeId = $this->db->con->insert_id;
+           $tmpFilePath = $_FILES['memejpg']['tmp_name'];
+           $destinationPath = "../postimg/".$memeId.".jpg";
+           
+           $imageAdapter->saveImage($tmpFilePath, $destinationPath);
+           
+           // echo 'posted';
+       }
+       else {
+           echo "<script>alert('post is not done try again');</script>";
+       }
+   }
+   //if isset post button ends
+}
+
+
+
+
+
+
+
 
 		public function fetch_post($interest = null, $emotion = null){
 
@@ -219,12 +254,82 @@ if(!isset($_SESSION))
   }
 
 
+
+
+
+
+
+
+
+
+//adapter functionality for change image into jpeg
+interface ImageAdapterInterface {
+   public function saveImage($tmpFilePath, $destinationPath);
+}
+
+// class ExistingImageAdapter implements ImageAdapterInterface {
+//    public function saveImage($tmpFilePath, $destinationPath) {
+//        move_uploaded_file($tmpFilePath, $destinationPath);
+//    }
+// }
+
+class JpegImageAdapter implements ImageAdapterInterface {
+   public function saveImage($tmpFilePath, $destinationPath) {
+       if (move_uploaded_file($tmpFilePath, $destinationPath)) {
+           // Convert to JPEG if needed
+           $imageInfo = getimagesize($destinationPath);
+           if ($imageInfo['mime'] !== 'image/jpeg') {
+               $jpegPath = $destinationPath . ".jpg";
+               $this->convertToJpeg($destinationPath, $jpegPath);
+               unlink($destinationPath); // Remove the original non-JPEG image
+               rename($jpegPath, $destinationPath); // Rename the converted image
+           }
+       }
+   }
+
+   private function convertToJpeg($sourcePath, $jpegPath) {
+       $image = imagecreatefrompng($sourcePath); // You can modify this for other formats
+       if ($image !== false) {
+           imagejpeg($image, $jpegPath, 100);
+           imagedestroy($image);
+       }
+   }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	require_once "../config/config.php";//add db
    $Database = Database::getInstance();
    $ptMgr = PostManagerFactory::create($Database);
 	// $ptMgr = new postmanager($Database);//db instance/obj and pass db obj thorough constructor
    if (isset($_POST['post'])) {
-      $ptMgr->create_post();
+      // $ptMgr->create_post();
+
+
+
+      // $existingCode = new YourExistingCode(); // Create an instance of your existing code class
+      $imageAdapter = new JpegImageAdapter(); // Create an instance of the JPEG image adapter
+      
+      $ptMgr->create_post($imageAdapter); // Use the adapter to call the existing behavior with JPEG conversion
+      
+
+
+
 
       header("location: ../home/");//modified on 18/12/22
    }//if post btn is clicked then just run create post function

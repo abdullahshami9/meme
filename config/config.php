@@ -8,7 +8,7 @@ $_SESSION['config'] = 1;
 		private static $instance;
 		private $servername = "localhost";
 		private $username = "root";
-		private $password = "";
+		private $password = "123456";
 		private $db_name = "memehub";
 		public $con;
 
